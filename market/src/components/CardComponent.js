@@ -1,8 +1,14 @@
 import { Button, StyleSheet, Text, View } from 'react-native'
 import React from 'react'
 import { Card } from '@rneui/themed'
+import { useDispatch } from 'react-redux'
+import { addtoCart } from '../store/slices/cartSlice'
 
 const CardComponent = ({ item }) => {
+    const dispatch = useDispatch()
+    const handleCart = () => {
+        dispatch(addtoCart(item))
+    }
     return (
         <>
             <Card>
@@ -14,7 +20,7 @@ const CardComponent = ({ item }) => {
                     }}
                 />
                 <Text>{item.price}$ </Text>
-                <Button title='Add to Cart' onPress={null} />
+                <Button title='Add to Cart' onPress={handleCart} />
             </Card>
         </>
 
