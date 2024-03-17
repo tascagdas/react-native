@@ -1,9 +1,10 @@
 import {Button, StyleSheet, Text, TextInput, View} from 'react-native';
-import React, {useState} from 'react';
+import React from 'react';
 import axios from 'axios';
 import {Formik} from 'formik';
 import * as Yup from 'yup';
 import Toast from 'react-native-toast-message';
+import AsyncStorage from '@react-native-async-storage/async-storage';
 
 const loginSchema = Yup.object().shape({
   username: Yup.string()
@@ -18,15 +19,18 @@ const loginSchema = Yup.object().shape({
 const LoginFormik = ({navigation}) => {
   const handleLogin = async values => {
     try {
-      await axios.post('https://dummyjson.com/auth/login', values).then(res => {
-        if (res.status === 200) {
-          navigation.navigate('Home');
-          Toast.show({
-            type: 'Success',
-            text1: 'Welcome',
-          });
-        }
-      });
+      await axios
+        .post('https://dummyjson.com/auth/login', values)
+        .then(async res => {
+          if (res.status === 200) {
+            await AsyncStorage.setItem('access_token', res.data.token);
+            navigation.navigate('Home');
+            Toast.show({
+              type: 'Success',
+              text1: 'Welcome',
+            });
+          }
+        });
     } catch (error) {
       console.log('Login Error', error);
       if (error.response) {
